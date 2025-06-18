@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block zawartosc %}
+    <div>
+        <ul>
+        {% for author in authors %}
+            <li>{{ author.first_name }} {{ author.last_name }}</li>
+        {% endfor %}
+        </ul>
+    </div>
+    <form method="POST" >
+        {% csrf_token %}
+    <p><input type="text" name="first_name" placeholder="Imie"></p>
+    <p><input type="text" name="last_name" placeholder="Nazwisko"></p>
+    <p><input type="submit"></p>
+    </form>
+{% endblock %}

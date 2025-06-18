@@ -17,8 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from films import views
+from django.views.generic import TemplateView
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.IndexView.as_view(), name='home'),
+    path('', TemplateView.as_view(template_name='base.html'), name='home'),
+    path('add_film/', views.AddFilmView.as_view(), name='add_film'),
+    path('add_author/', views.AddAuthorView.as_view(), name='add_author'),
 
 ]
