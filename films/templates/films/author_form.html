@@ -1,0 +1,10 @@
+{% block zawartosc %}
+    <div>
+        <form method="POST" >
+            {% csrf_token %}
+        <p><input type="text" name="first_name" value="{{ author.first_name }}" placeholder="Imie"></p>
+        <p><input type="text" name="last_name" value="{{ author.last_name }}" placeholder="Nazwisko"></p>
+        <p><button type="submit">Wyslij</button> </p>
+        </form>
+    </div>
+{% endblock %}

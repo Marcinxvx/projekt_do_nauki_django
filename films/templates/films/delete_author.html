@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{%  block zawartosc %}
+    <div>
+        <p>
+            Czy jestes pewien ze chcesz usunac  {{ author.first_name }} {{ author.last_name }} ?
+        </p>
+    </div>
+    <div>
+    <form method="POST"> <!-- tutaj jak klikniemy buttona to znowu formularz wysyła nas do urls.py gdzie jest szukany path odpowiedni czyli delete_author/<int:primary_key>, ale juz nie trzeba przekazywac primary_key z tego html gdyż jest wpsany w przegladarce np /delete_author/5 (nawet go tutaj nie ma w formularzu) -->
+        {%  csrf_token %}
+        <input type="submit" name="operation" value="Tak">
+        <input type="submit" name="operation" value="Nie">
+    </form>
+    </div>
+{% endblock %}

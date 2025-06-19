@@ -1,16 +1,22 @@
 {% extends 'base.html' %}
 {% block zawartosc %}
+    {% include 'films/author_form.html' %}
     <div>
         <ul>
         {% for author in authors %}
-            <li>{{ author.first_name }} {{ author.last_name }}</li>
+            <li>
+                <p>
+                {{ author.first_name }} {{ author.last_name }}
+                </p>
+                <a href="{% url 'delete_author' primary_key=author.id %}"> <!-- szuka w urls.py path gdzie name='delete_author' i przekazuje do niego primary_key=author.id -->
+                    <button>Usun autora</button>
+                </a>
+                <a href="{% url 'update_author' primary_key=author.id %}">
+                    <button>Zaktualizuj autora</button>
+                </a>
+            </li>
+
         {% endfor %}
         </ul>
     </div>
-    <form method="POST" >
-        {% csrf_token %}
-    <p><input type="text" name="first_name" placeholder="Imie"></p>
-    <p><input type="text" name="last_name" placeholder="Nazwisko"></p>
-    <p><input type="submit"></p>
-    </form>
 {% endblock %}
