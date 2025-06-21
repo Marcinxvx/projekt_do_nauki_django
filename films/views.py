@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.urls import reverse
 
 from django.views import View
-from films.models import Author
+from films.models import Author, Publisher
 
 
 # Create your views here.
@@ -48,3 +48,36 @@ class UpdateAuthorView(View):
                                                                                                             # args = [...] — lista pozycyjna ---> Musi się zgadzać kolejność z tym, co masz w path():
                                                                                                             # kwargs = {...} — słownik nazwanych argumentów ---> Kolejność nie ma znaczenia
                                                                                                             #                                               ---> Klucze muszą dokładnie pasować do nazw w URL (np. primary_key)
+class AddPublisherView(View):
+    def get(self, request):
+        publishers = Publisher.objects.all()
+        return render(request, 'publisher/add_publisher.html', {'publishers': publishers})
+    def post(self, request):
+        name = request.POST['name']
+        year = request.POST['year']
+        publisher = Publisher.objects.create(name=name, year=year)
+        return HttpResponseRedirect(reverse('add_publisher'))
+
+class DeletePublisherView(View):
+    def get(selfself, request, primary_key):
+        publisher = Publisher.objects.get(pk=primary_key)
+        return render(request, 'publisher/delete_publisher.html', {'publsher': publisher})
+    def post(self, request, primary_key):
+        publisher = Publisher.objects.get(pk=primary_key)
+        if request.POST['operation'] == "Tak":
+            publisher.delete()
+        return HttpResponseRedirect(reverse('add_publisher'))
+
+class UpdatePublisherView(View):
+    def get(self, request, primary_key):
+        publisher = Publisher.objects.get(pk=primary_key)
+        return render(request, 'publisher/update_publisher.html', {'publisher': publisher})
+    def post(self, request, primary_key):
+        publisher = Publisher.objects.get(pk=primary_key)
+        publisher.name = request.POST['name']
+        publisher.year = request.POST['year']
+        publisher.save()
+        return HttpResponseRedirect(reverse('update_publisher', kwargs={'primary_key': primary_key}))
+
+
+

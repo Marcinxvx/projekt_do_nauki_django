@@ -26,4 +26,8 @@ urlpatterns = [
     path('add_author/', views.AddAuthorView.as_view(), name='add_author'),
     path('delete_author/<int:primary_key>', views.DeleteAuthorView.as_view(), name='delete_author'), # z add_author.html dostaje <a href= z danymi iprzekazuje do adresu i odpala widok, potem wracamy znowu tutaj poprzez delete_author.html bo w formularzu mamy metode POST, dane juz mamy z paska adresu np. /delete_author/5
     path('update_author/<int:primary_key>', views.UpdateAuthorView.as_view(), name='update_author'),
+    path('add_publisher/', views.AddPublisherView.as_view(), name='add_publisher'),
+    path('delete_publisher/<int:primary_key>', views.DeletePublisherView.as_view(), name='delete_publisher'),
+    path('update_publisher/<int:primary_key>', views.UpdatePublisherView.as_view(), name='update_publisher'),
+
 ]

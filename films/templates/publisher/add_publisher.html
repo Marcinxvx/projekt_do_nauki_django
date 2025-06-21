@@ -1,0 +1,16 @@
+{%  extends 'base.html' %}
+{% block zawartosc %}
+{%  include 'publisher/publisher_form.html' %}
+	<div>
+        <ul>
+            {% for publisher in publishers %}
+                <li>
+                    <p>{{ publisher.name }} {{ publisher.year }}</p>
+                    <a href="{% url 'delete_publisher' primary_key=publisher.pk %}"><button type="submit">Usun wydawnictwo</button></a>
+                    <a href="{% url 'update_publisher' primary_key=publisher.pk %}"><button type="submit">Zaktualizuj wydawnictwo</button></a>
+                </li>
+
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

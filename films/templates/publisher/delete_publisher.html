@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block zawartosc %}
+    <div>
+        <p>Czy na pewno chcesz usunac {{ publisher.name }}?</p>
+    </div>
+    <div>
+        <form method="POST">
+            {% csrf_token %}
+            <button type="submit" name="operation" value="Tak">Tak</button>
+            <button type="submit" name="operation" value="Nie">Nie</button>
+        </form>
+    </div>
+{% endblock %}
