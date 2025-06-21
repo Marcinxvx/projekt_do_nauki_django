@@ -4,7 +4,8 @@ from django.shortcuts import render
 from django.urls import reverse
 
 from django.views import View
-from films.models import Author, Publisher
+from films.models import Author, Publisher, Distributor
+from films.forms import AddDistributorForm
 
 
 # Create your views here.
@@ -55,7 +56,7 @@ class AddPublisherView(View):
     def post(self, request):
         name = request.POST['name']
         year = request.POST['year']
-        publisher = Publisher.objects.create(name=name, year=year)
+        Publisher.objects.create(name=name, year=year)
         return HttpResponseRedirect(reverse('add_publisher'))
 
 class DeletePublisherView(View):
@@ -79,5 +80,20 @@ class UpdatePublisherView(View):
         publisher.save()
         return HttpResponseRedirect(reverse('update_publisher', kwargs={'primary_key': primary_key}))
 
-
+# tworzenie widoków i formularzy na podstawie forms.py -
+# sluzy do walidacji danych i tworzenia formularzy, ale itak MUSZE pobrac dane z bazy jeżęli chce je do kontekstu przekazac np. lista dystrybutorow
+class AddDistributorView(View):
+    def get(self, request):
+        distributors = Distributor.objects.all()
+        form = AddDistributorForm()
+        return render(request, 'distributor/add_distributor.html', {'form': form, 'distributors': distributors} )
+    def post(self, request):
+        distributors = Distributor.objects.all()
+        form = AddDistributorForm(request.POST) # pobieramy formularz wypelniony danymi
+        if form.is_valid():                     # walidujemy go wedlug wlasnych standardow z klasy z forms.py
+            name = form.cleaned_data['name']    # pobieramy dane z pól
+            year = form.cleaned_data['year']    # pobieramy dane z pól
+            Distributor.objects.create(name=name, year=year) # tworzymy obiek w bazie danych
+            return HttpResponseRedirect(reverse('add_distributor'))
+        return render(request, 'distributor/add_distributor.html', {'form': form, 'distributors': distributors})
 

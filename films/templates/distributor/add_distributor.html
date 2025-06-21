@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block zawartosc %}
+{% include 'distributor/distributor_form.html' %}
+<div>
+    <ul>
+        {% for distributor in distributors %}
+            <li>
+                <p>{{ distributor.name }} {{ distributor.year }}</p>
+            </li>
+        {%  endfor %}
+    </ul>
+</div>
+
+{% endblock %}

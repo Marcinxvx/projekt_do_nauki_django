@@ -29,5 +29,6 @@ urlpatterns = [
     path('add_publisher/', views.AddPublisherView.as_view(), name='add_publisher'),
     path('delete_publisher/<int:primary_key>', views.DeletePublisherView.as_view(), name='delete_publisher'),
     path('update_publisher/<int:primary_key>', views.UpdatePublisherView.as_view(), name='update_publisher'),
+    path('add_distributor/', views.AddDistributorView.as_view(), name='add_distributor'),
 
 ]

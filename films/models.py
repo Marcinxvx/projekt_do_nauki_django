@@ -13,3 +13,7 @@ class Film(models.Model):
 class Publisher(models.Model):
     name = models.CharField(max_length=100)
     year = models.IntegerField()
+
+class Distributor(models.Model):
+    name = models.CharField(max_length=100)
+    year = models.IntegerField()

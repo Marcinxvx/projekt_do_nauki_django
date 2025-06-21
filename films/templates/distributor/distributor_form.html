@@ -1,0 +1,9 @@
+{% block zawartosc %}
+    <div>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Wyslij</button>
+        </form>
+    </div>
+{% endblock %}
