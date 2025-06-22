@@ -30,5 +30,6 @@ urlpatterns = [
     path('delete_publisher/<int:primary_key>', views.DeletePublisherView.as_view(), name='delete_publisher'),
     path('update_publisher/<int:primary_key>', views.UpdatePublisherView.as_view(), name='update_publisher'),
     path('add_distributor/', views.AddDistributorView.as_view(), name='add_distributor'),
-
+    path('add_genre/', views.AddGenreView.as_view(), name='add_genre'),
+    path('film_list/', views.FilmListView.as_view(), name='film_list'),
 ]

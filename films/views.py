@@ -4,17 +4,11 @@ from django.shortcuts import render
 from django.urls import reverse
 
 from django.views import View
-from films.models import Author, Publisher, Distributor
-from films.forms import AddDistributorForm
+from films.models import Author, Publisher, Distributor, Film
+from films.forms import AddDistributorForm, AddFilmForm, AddGenreForm, FilmSearchForm
 
 
 # Create your views here.
-
-class AddFilmView(View):
-    def get(self, request):
-        return render(request, 'films/add_film.html')
-    def post(self, request):
-        return render(request, 'films/add_film.html')
 
 class AddAuthorView(View):
     def get(self, request):
@@ -96,4 +90,37 @@ class AddDistributorView(View):
             Distributor.objects.create(name=name, year=year) # tworzymy obiek w bazie danych
             return HttpResponseRedirect(reverse('add_distributor'))
         return render(request, 'distributor/add_distributor.html', {'form': form, 'distributors': distributors})
+
+class AddFilmView(View):
+    def get(self, request):
+        form = AddFilmForm()
+        return render(request, 'distributor/add_distributor.html', {'form': form}) #korzystamy z html ktory juz napislismy
+    def post(self, request):
+        form = AddFilmForm(request.POST) # pobieramy formularz wypelniony danymi
+        if form.is_valid():              # walidujemy go wedlug wlasnych standardow z klasy z forms.py
+            book = form.save()           # formularz AddFilmForm jest poprzez 'class Meta:' powiazany z modelem Film, wiec skracamy zapis
+            return HttpResponseRedirect(reverse('add_distributor'))
+        return render(request, 'distributor/add_distributor.html')                        #korzystamy z html ktory juz napislismy
+
+class AddGenreView(View):
+    def get(self, request):
+        form =AddGenreForm()
+        return render(request, 'distributor/add_distributor.html', {'form': form})
+    def post(self, request):
+        form = AddGenreForm(request.POST)
+        if form.is_valid():
+            genre = form.save()
+            return HttpResponseRedirect(reverse('add_distributor'))
+        return render(request, 'distributor/add_distributor.html', {'form': form})
+
+class FilmListView(View):
+    def get(self, request):
+        films = Film.objects.all()
+        form = FilmSearchForm(request.GET)
+        if form.is_valid():
+            title = form.cleaned_data.get('title', '')
+        else:
+            title = ''
+        films = films.filter(title__icontains=title)
+        return render(request, 'films/film_list.html', {'form': form, 'films': films})
 
