@@ -24,4 +24,6 @@ class AddGenreForm(forms.ModelForm):
         fields = "__all__"
 
 class FilmSearchForm(forms.Form):
-    title = forms.CharField(max_length=100, label='', widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Title'}))# zmieniamy widget tylko dal tego konkretnego elementu title
+    title = forms.CharField(max_length=100, label='',
+                            widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Title'}),
+                            required=False)# zmieniamy widget tylko dal tego konkretnego elementu title

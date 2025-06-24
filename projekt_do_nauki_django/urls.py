@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from films import views
 from django.views.generic import TemplateView
 
@@ -32,4 +32,9 @@ urlpatterns = [
     path('add_distributor/', views.AddDistributorView.as_view(), name='add_distributor'),
     path('add_genre/', views.AddGenreView.as_view(), name='add_genre'),
     path('film_list/', views.FilmListView.as_view(), name='film_list'),
+    path('accounts/', include('accounts.urls')), # tworzymy nowy plik urls.py w aplikacji account i tam trzymamy do niej url, aby uniknac powtorzenia importu 'from films import views' zeby nie bylo 2x 'views'
+                                                       # bedzie podstawial adresy np 'accounts/register/' czy 'accounts/login/'
+                                                       # w tych głównych urls.py mozna zostawic tylko to co powyzej i analogicznie adresy do innych apliakcji np. 'path('films/', include('films.urls'))', ale nie przeklejam zeby sie nie pogubic
+                                                       # a wszystkie szeczególowe urlsy np 'add_film/' poprzenosci do aplikacji abby byl porzadek
+
 ]

@@ -1,12 +1,12 @@
 {%  extends 'base.html' %}
 {% block zawartosc %}
 <div>
-    <form method="GET"> {# szukamy metoda GET #}
-        {% csrf_token %}
+    <form method="GET"> {# szukamy zgodnie ze sztuka po metodzie GET #}
+        {# csrf_token nie potrzebne bo przez GET oraz nie wysylamy kluczowych danych #}
         {{ form.as_ul }}
         <button type="submit">Szukaj</button>
     </form>
-</div>    
+</div>
 <div>
     <ul>
         {% for film in films %}

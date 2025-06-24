@@ -98,18 +98,18 @@ class AddFilmView(View):
     def post(self, request):
         form = AddFilmForm(request.POST) # pobieramy formularz wypelniony danymi
         if form.is_valid():              # walidujemy go wedlug wlasnych standardow z klasy z forms.py
-            book = form.save()           # formularz AddFilmForm jest poprzez 'class Meta:' powiazany z modelem Film, wiec skracamy zapis
+            form.save()                  # formularz AddFilmForm jest poprzez 'class Meta:' powiazany z modelem Film, wiec skracamy zapis
             return HttpResponseRedirect(reverse('add_distributor'))
         return render(request, 'distributor/add_distributor.html')                        #korzystamy z html ktory juz napislismy
 
 class AddGenreView(View):
     def get(self, request):
-        form =AddGenreForm()
+        form = AddGenreForm()
         return render(request, 'distributor/add_distributor.html', {'form': form})
     def post(self, request):
         form = AddGenreForm(request.POST)
         if form.is_valid():
-            genre = form.save()
+            form.save()
             return HttpResponseRedirect(reverse('add_distributor'))
         return render(request, 'distributor/add_distributor.html', {'form': form})
 
