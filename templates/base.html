@@ -6,6 +6,7 @@
 </head>
 <body>
 Start aplikacji
+{%  if user.is_authenticated %} Witaj {{ user.username }} {% endif %} {# wyswietlamy jak jest zalogowany, login(request, user) w class LoginView(View): robi to automatycznie #}
 {% include 'links.html' %}
 {% block zawartosc  %}
     <p>Tutaj beda zawartosci stron</p>

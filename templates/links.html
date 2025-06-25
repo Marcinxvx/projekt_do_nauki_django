@@ -8,5 +8,10 @@
     <a href="{% url 'film_list' %}">Lista filmow</a>
 </div>
 <div>
+    {% if user.is_authenticated %} {# tak jak w base.html zmienne przekazuje autoamtycznie widok poprzez logout(request) #}
+    <a href="{%  url 'logout' %}">Wyloguj</a>
+    {% else %}
     <a href="{% url 'register' %}">Załóż konto</a>
+    <a href="{% url 'login' %}">Zaloguj</a>
+    {% endif %}
 </div>

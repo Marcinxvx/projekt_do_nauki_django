@@ -21,4 +21,7 @@ from accounts import views
 
 urlpatterns = [
     path('register/', views.RegisterView.as_view(), name='register'), # tu mamy url do tej konkretnej apku a w glownych urls.py mamy importowny include i on bedzei podstawial tam adresy np 'accounts/register/' czy 'accounts/login/'
+    path('login/', views.LoginView.as_view(), name='login'),
+    path('logout/', views.LogoutView.as_view(), name='logout'),
+
 ]

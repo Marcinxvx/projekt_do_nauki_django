@@ -12,3 +12,7 @@ class RegisterUserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('username', 'password1', 'password2')
+
+class LoginForm(forms.Form):
+    username = forms.CharField(widget=forms.TextInput(attrs={'class': "form-control"})) #nie łaczymy w jeden form z Register, tworzymy osobno zgodnie ze sztuka
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': "form-control"}))
