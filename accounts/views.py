@@ -35,7 +35,8 @@ class LoginView(View):
             user = authenticate(username=username, password=password) # to jest wlasnie "autentykacja", potwierdzamy torzsamość sprawdzmy czy login odpowiada haslu zaszyfrowanemu
             if user is not None:                                      # jak sie zgadza logujemy sie dosystemu
                 login(request, user)
-                return HttpResponseRedirect(reverse('home')) # nie musimy przekazywac dodatkowego contex do szablonu, zeby miec dostep do danych urzytkownika bo robi to domyslnie login(request, user)
+                next_url = request.GET.get('next', 'home') # dzieki temu gdy widok class FilmListView(LoginRequiredMixin,View):, przekieruje nas na logowanie bo jest dostepny tylko dla zalogowanych, to po zalogowaniu przekieruje nas odrazu na widok class FilmListView(LoginRequiredMixin,View):
+                return HttpResponseRedirect(next_url) # nie musimy przekazywac dodatkowego contex do szablonu, zeby miec dostep do danych urzytkownika bo robi to domyslnie login(request, user)
         return render(request, 'distributor/distributor_form.html', {'form': form, 'error': 'Nie prawidlowe dane logowania'})
 
 class LogoutView(View):

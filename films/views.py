@@ -1,4 +1,5 @@
 from django.contrib.admindocs.views import ViewIndexView
+from django.contrib.auth.mixins import LoginRequiredMixin,PermissionRequiredMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
@@ -102,7 +103,8 @@ class AddFilmView(View):
             return HttpResponseRedirect(reverse('add_distributor'))
         return render(request, 'distributor/add_distributor.html')                        #korzystamy z html ktory juz napislismy
 
-class AddGenreView(View):
+class AddGenreView(PermissionRequiredMixin,View):  # mechanizm PermissionRequiredMixin do sprawdzania uprawnien uzytkownika, nie potrzebujemy dodawac juz LoginRequiredMixin, bo PermissionRequiredMixin dziedziczy po LoginRequiredMixin
+    permission_required = ['films.add_genre'] # parametr django 'permission_required' sprawdza czy mamy uprawnienia,w nawiasie podajemy nazwe aplikacji a po kropce nazwe codename z tabeli django 'auth_permission', nadajemy te uprawnienia przez superusera w panelu administracyjnym django
     def get(self, request):
         form = AddGenreForm()
         return render(request, 'distributor/add_distributor.html', {'form': form})
@@ -113,7 +115,7 @@ class AddGenreView(View):
             return HttpResponseRedirect(reverse('add_distributor'))
         return render(request, 'distributor/add_distributor.html', {'form': form})
 
-class FilmListView(View):
+class FilmListView(LoginRequiredMixin,View): # ten dekorator LoginRequiredMixin powoduje, ze widok dziala (wyswietla sie) tylko gdy uzytkownik jest zalogowany, przekierowuje automatycznie do widoku logowania, dlatego appke nazywamy'accounts' bo w settings.py jest domyslnie przekierowanie na accounts/login
     def get(self, request):
         films = Film.objects.all()
         form = FilmSearchForm(request.GET)
