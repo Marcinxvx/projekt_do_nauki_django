@@ -6,6 +6,10 @@
 </head>
 <body>
 Start aplikacji
+<div>
+    <h2>{{ result }}</h2> {# w settings.py w TEMPLATES sa kontekst procesory ktore automatycznie sa zawsze w kontekscie przekazywanym do widkow nawet jak nie odajemy kontekstu #}
+    <h1>{{ message }}</h1> {# mozemy dopisac tam wlasne pliki z finkcjiami ktore zawsze bedo przekazywane do kontekstu, jak np context_processors.py w apce films, ale uwaazajmy by nienadpisac czegos #}
+</div>
 {%  if user.is_authenticated %} Witaj {{ user.username }} {% endif %} {# wyswietlamy jak jest zalogowany, login(request, user) w class LoginView(View): robi to automatycznie #}
 {% include 'links.html' %}
 {% block zawartosc  %}
