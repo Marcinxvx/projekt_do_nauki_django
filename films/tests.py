@@ -4,7 +4,7 @@ from django.test import Client
 from django.urls import reverse
 
 from films.forms import AddDistributorForm
-from films.models import Author, Distributor
+from films.models import Author, Distributor, Film
 
 # Create your tests here.
 
@@ -76,7 +76,7 @@ def test_add_distributor_view_post_not_valid():  # test jezeli w imieniu jest za
     }
     response = c.post(url, data)
     assert response.status_code == 200  # jezeli formularz jest niezwalidowany to '200' bo w returnie mamy render
-    assert not Distributor.objects.exists() # upewniamy sie przy niezwalidowanym formulardzu ze obiek sie nie zapisal do bazy danych
+    assert not Distributor.objects.exists() # upewniamy sie przy niezwalidowanym formulardzu ze obiek sie nie zapisal do bazy danych, czy jest pusta
     form = response.context['form']
     assert form.errors
 
@@ -87,3 +87,37 @@ def test_film_list_view_without_login(): # test gdy urzytkownik jest niezalogowa
     response = c.get(url)
     assert response.status_code == 302 # pomimo że metoda jest get, to widok wymaga aby user byl zalogowany i przekierowuje do widoku logowani czli daje odpowiedz Redirecta wiec odpowiedz 302
     assert response.url.startswith(reverse('login')) # response.url, to adres na ktory zostelismy przekierowani, sprawdzamy czy przekierowuje nas na adres logowania czy string c.get(url) zaczyna sie od /login
+
+@pytest.mark.django_db
+def test_film_list_view_login(user, films): # nie musimy przekazywac dodatkowych fixtur, ktore sa w relacji bazodanowej do films bo w fixturze ja dodalismy do fixtury films
+    c = Client()
+    c.force_login(user) # niepotrzebujemy sprawdzac loginu i hasla, nie potrzebujemy sprawdzac jego prawa do zalogowania, potrebujemy zeby poprostu byl zalogowany, by widok dzialal
+    url = reverse('film_list')
+    data = {
+        'title': 'Film 1' # 'title' to klucz z widoku, 'Film 1' to wartosc ktora wpisuje uzytkownik w formularz wyszukiwania filmu w widoku
+    }
+    response = c.get(url, data)
+    assert response.status_code == 200
+    assert response.context['films'].count() == 1 # sprawdzamy ile filmow zostalo znalezionych po przefiltrowaniu, tylko jeden ma name "Film 1"
+
+# test na dodawanie obiektow, ktore zaleza od innych obiektów
+@pytest.mark.django_db
+def test_add_film_view_post(authors, publishers, genres): # przekazujemy fixtury, ponieważ bedzeimy odwolywac sie do nich w slowniku 'data' ponizej
+    c = Client()
+    url = reverse('add_film')
+    data = {              # symulujemy dane wprowadzane przez urzytkowika do formularza
+        'title': 'testowy',
+        'author': authors[0].id, # W HTML formularzu, gdy wybieramy autora, to przeglądarka wysyła do Django tylko jego numer id Nie może wysłać całego obiektu autora, ymulujemy to, co robi przeglądarka: wysyła id autora, symulujemy w html np: "value=1, ktore w bazie odpowiada key
+        'publisher': publishers[0].id, # to co jest w HTML jako value w <select>, to najczęściej primary key (czyli id) obiektu w bazie danych.
+        'genres': [genre.id for genre in genres], # pobiera id z każdego gatunku i Ssmuluje, że w formularzu użytkownik zaznaczył wszystkie dostępne gatunki
+    }
+    response = c.post(url, data)
+    assert response.status_code == 302
+    assert Film.objects.get(title='testowy')
+"""         !!!!!!!!!     
+NIE wpisujemy ID "na sztywno" (np. 'author': 1), tylko pobieramy je dynamicznie (np. 'author': authors[0].id)
+W SQLite testowa baza danych jest tworzona od nowa przy każdym teście, więc ID zwykle zaczynają się od 1.
+W PostgreSQL testowa baza nie jest tworzona od nowa, tylko czyszczona — ID mogą rosnąć z każdym testem (np. 8, 15, 27...).
+Dlatego wpisując ID na sztywno, test może się wywalić, bo taki obiekt może nie istnieć.
+ZAWSZE pobieramy ID bezpośrednio z obiektu, np. genre.id albo author.id – wtedy test działa niezależnie od bazy danych.
+"""
