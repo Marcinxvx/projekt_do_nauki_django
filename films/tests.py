@@ -121,3 +121,33 @@ W PostgreSQL testowa baza nie jest tworzona od nowa, tylko czyszczona — ID mog
 Dlatego wpisując ID na sztywno, test może się wywalić, bo taki obiekt może nie istnieć.
 ZAWSZE pobieramy ID bezpośrednio z obiektu, np. genre.id albo author.id – wtedy test działa niezależnie od bazy danych.
 """
+@pytest.mark.django_db
+def test_update_author_view_post(authors):
+    c = Client()
+    url = reverse('update_author', args=[authors[0].id]) # trzeba podać przez args id autora do url
+    data = {
+        'first_name': "Tadeusz",
+        'last_name': "Norek",
+    }
+    response = c.post(url, data)              # wysyłamy żądanie POST z nowymi danymi autora, symulujac wyslanie formularza w przegladarce
+    assert response.status_code == 302
+    assert Author.objects.get(**data)         # sprawdzamy czy zapisal sie obiekt
+    authors[0].refresh_from_db()              # odsiezamy obiekt autora z bazy, żeby mieć aktualne dane
+    assert authors[0].first_name == "Tadeusz" # sprawdzamy czy dane sie zaktualizowaly
+    assert authors[0].last_name == "Norek"    # sprawdzamy czy dane sie zaktualizowaly
+
+@pytest.mark.django_db
+def test_film_list_view_permissions(user, films): # test widoku ktory wymaga uprawnien
+    c = Client()
+    c.force_login(user) # logujemy uzytkownika gdyż PermissionRequiredMixin, dziedziczy po LoginRequiredMixin, a my chcemy sprawdzic tylko uprawnienia do widokow
+    url = reverse('add_genre') # dodajemy url ktorego widok wymaga uprawnien
+    response = c.get(url)
+    assert response.status_code == 403 # sprawdzamy czy dostaniemy odpowiedz '403 Forbidden"
+
+@pytest.mark.django_db
+def test_film_list_view_permissions_user_with_permissions(user_with_permissions, films): # test widoku ktory wymaga uprawnien, ale z fixtura urzytkowniaka ktora posiada uprawniania
+    c = Client()
+    c.force_login(user_with_permissions)
+    url = reverse('add_genre')
+    response = c.get(url)
+    assert response.status_code == 200

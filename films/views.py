@@ -104,7 +104,7 @@ class AddFilmView(View):
         return render(request, 'distributor/add_distributor.html')                        #korzystamy z html ktory juz napislismy
 
 class AddGenreView(PermissionRequiredMixin,View):  # mechanizm PermissionRequiredMixin do sprawdzania uprawnien uzytkownika, nie potrzebujemy dodawac juz LoginRequiredMixin, bo PermissionRequiredMixin dziedziczy po LoginRequiredMixin
-    permission_required = ['films.add_genre'] # parametr django 'permission_required' sprawdza czy mamy uprawnienia,w nawiasie podajemy nazwe aplikacji a po kropce nazwe codename z tabeli django 'auth_permission', nadajemy te uprawnienia przez superusera w panelu administracyjnym django
+    permission_required = ['films.add_genre', 'films.change_genre', 'films.add_film'] # parametr django 'permission_required' sprawdza czy mamy uprawnienia,w nawiasie podajemy nazwe aplikacji a po kropce nazwe codename z tabeli django 'auth_permission', nadajemy te uprawnienia przez superusera w panelu administracyjnym django
     def get(self, request):
         form = AddGenreForm()
         return render(request, 'distributor/add_distributor.html', {'form': form})

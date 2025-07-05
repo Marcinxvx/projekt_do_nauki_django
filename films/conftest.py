@@ -1,5 +1,6 @@
 import pytest
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Permission
+from django.contrib.contenttypes.models import ContentType
 
 from films.models import Author, Distributor, Film, Genre, Publisher
 
@@ -28,6 +29,18 @@ def genres():
 @pytest.fixture
 def user():
     return User.objects.create_user(username="testowy", password="ala ma kota") # możemy uzyc genrealnej metody .create , ale dzieki metodzie .create_user mamy odrazu zahaszowane haslo
+
+@pytest.fixture
+def user_with_permissions(user):
+    ct = ContentType.objects.get(model="genre")         # typ treści dla modelu Genre
+    ct2 = ContentType.objects.get(model="film")         # typ treści dla modelu Film
+    permissions = Permission.objects.filter(content_type=ct)      # wszystkie uprawnienia do Genre
+    permissions_02 = Permission.objects.filter(content_type=ct2)  # wszystkie uprawnienia do Film
+    user.user_permissions.set(permissions)              # ustawiamy uprawnienia do Genre (czyści stare)
+    for item in permissions_02:
+        user.user_permissions.add(item)                 # dodajemy uprawnienia do Film (nie usuwa innych)
+    return user                                         # zwracamy użytkownika z uprawnieniami
+
 
 @pytest.fixture
 def films(authors, publishers, genres): # przekazujemy wczesniejsze fikstury powyżej, gdyż films ma relacjie z innymi modelami, i mozemy przekazac kolejne pola wymagane z poprzednich fikstur szybciej
